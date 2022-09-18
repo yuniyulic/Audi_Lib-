@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		<bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource">
+	      <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+	      <property name="url" value="jdbc:oracle:thin:@localhost:11521:xe"></property>
+	      <property name="username" value="TMAX"></property>
+	      <property name="password" value="TMAX"></property>
+	   </bean>
+	   
+	   <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+	       <constructor-arg ref="dataSourceSpied" />
+	       <property name="logFormatter">
+	           <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+	               <property name="loggingType" value="MULTI_LINE" />
+	               <property name="sqlPrefix" value="SQL:::" />
+	           </bean>
+	       </property>
+	   </bean>
+	   
+	   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	      <property name="dataSource" ref="dataSource"></property>
+	      <property name="mapperLocations" value="classpath:mapper/*-mapper.xml"></property>  <!-- classpath:는 src/main/resource 위치를 나타내는것, 즉 xml파일을 만들어준다 !-->
+	   </bean>
+	   
+	   <bean class="org.mybatis.spring.SqlSessionTemplate">
+	      <constructor-arg ref="sqlSessionFactory"></constructor-arg>
+	   </bean>
+	
+	<!-- 트랜젝션 매니저 -->
+	   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	      <property name="dataSource" ref="dataSource"></property>
+	   </bean>
+	<!-- Namespace에서tx추가 // annotaion에서 트랜잭션 처리를 하기 위한 설정 --> 
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+	    <!-- 파일업로드 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+       <!-- 용량 -->
+       <!--property name="maxUploadSize" value="30485760" /-->
+       <property name="maxUploadSize" value="3067477409" />
+       <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+    
+    <!-- google email -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	    <property name="host" value="smtp.gmail.com" />
+	    <property name="port" value="587" />
+	    <property name="username" value="udLibraryProject@gmail.com" />
+	    <property name="password" value="udlib0515" />
+	    <property name="javaMailProperties">
+	        <props>
+	            <prop key="mail.transport.protocol">smtp</prop>
+	            <prop key="mail.smtp.auth">true</prop>
+	            <prop key="mail.smtp.starttls.enable">true</prop>
+	            <prop key="mail.debug">true</prop>
+	        </props>
+	    </property>
+	</bean>
+    
+    <context:component-scan base-package="Audi_Lib.*.service"/>	
+</beans>

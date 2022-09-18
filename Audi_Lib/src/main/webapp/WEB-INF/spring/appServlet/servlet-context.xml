@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	<context:component-scan base-package="Audi_Lib.*.controller" />
+	
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+	<default-servlet-handler/>
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+	
+	<beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+    <beans:property name="order" value="0" />
+</beans:bean>
+<beans:bean id="downloadView" class="Audi_Lib.util.DownloadView" />
+
+
+	<!-- 타일즈(jsp 템플릿처럼 편하게보게함) 설정 -->
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+	       <beans:property name="definitions">
+	           <beans:list>
+	               <beans:value>classpath:tiles-config.xml</beans:value>
+	           </beans:list>
+	       </beans:property>
+	</beans:bean>
+	   
+	<beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+	        <beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+	        <beans:property name="order" value="1" /><!-- 순서를 우선으로 지정 -->
+    </beans:bean>
+    
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="2" />
+	</beans:bean>
+	
+	<!-- 스케쥴러 파일이 존재하는 패키지 설정 -->
+	<context:component-scan base-package="Audi_Lib.util"/>
+	<!-- 해당 태그들은 크론 탭 설정에 필요한 태그 -->
+		<task:scheduler id="jobScheduler" pool-size="10"/>
+		<task:annotation-driven scheduler="jobScheduler"/>
+	
+	<!-- intercepter 존재하는 패키지 설정 -->	
+	<context:component-scan base-package="Audi_Lib.interceptor" />
+		
+	<!-- interceptor클래스의 객체를 생성 -->
+	<beans:bean id="menuInterceptor" class="Audi_Lib.interceptor.Menulnterceptor"></beans:bean>
+	<beans:bean id="loginInterceptor" class="Audi_Lib.interceptor.LoginInterceptor"></beans:bean>
+	
+	<!-- interceptor가 실행될 요청을 지정 -->
+	<interceptors>
+		<!-- <interceptor>
+			<mapping path="/*/*"/>
+			<exclude-mapping path="/admin/insertCategory"/>
+			<beans:ref bean="menuInterceptor"/>
+		</interceptor> -->
+	
+		<interceptor>
+			<mapping path="/admin/*"/>
+			<mapping path="/member/myPage"/>
+			<mapping path="/member/memberInfo"/>
+			<mapping path="/member/rentReturnBook"/>
+			<mapping path="/member/bookAlgorithm"/>
+			<mapping path="/member/myParkingReserveList"/>
+			<mapping path="/member/myStudyRoomReserveList"/>
+			<mapping path="/admin/adminUpdateLectureInfo"/>
+			<mapping path="/admin/updateLectureInfo"/>
+			<mapping path="/admin/updateLectureInfoOfAdmin"/>
+			<mapping path="/bookRent/bookRentForm"/>
+			<mapping path="/bookRent/bookRent"/>
+			
+			<beans:ref bean="loginInterceptor"/>
+		</interceptor>
+	</interceptors>
+	
+</beans:beans>
