@@ -23,7 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class BoardController {
 
-	//참여마당
+	//참여마당 - 공지사항/자유게시판
 	@RequestMapping("/board.do")
 	public ModelAndView board(@RequestParam HashMap<Object, Object> params, ModelAndView mv) {
 		mv.setViewName("board/board");

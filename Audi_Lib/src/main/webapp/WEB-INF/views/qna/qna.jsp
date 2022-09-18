@@ -78,7 +78,14 @@ table {
 			</thead>
 			<!-- @@@@@ 기능 구현 -->
 			<tbody>
-				
+				<c:forEach items="${qnaList }" var="qnaList">
+					<tr>
+						<th scope="row">${qna.rn }</th>
+						<td>
+							hihihi~ wonho HI~~~
+						</td>
+					</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 

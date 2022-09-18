@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.scripting.xmltags.IfSqlNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import Audi_Lib.book.service.BookService;
 import Audi_Lib.book.vo.MonthlyBookRankVO;
 import Audi_Lib.home.service.HomeService;
 import Audi_Lib.home.vo.PagingVO;
+import Audi_Lib.qna.service.QnaService;
 import Audi_Lib.util.DateUtil;
 
 @Controller
@@ -31,6 +33,9 @@ public class HomeController {
 	
 	@Resource(name = "boardService")
 	private BoardService boardService;
+
+	@Resource(name = "qnaService")
+	private QnaService qnaService;
 	
 	//현재 index.jsp를 거쳐서 들어오는 홈페이지
 	@RequestMapping("/first")
@@ -121,7 +126,23 @@ public class HomeController {
 	public String qna(PagingVO pagingVO, Model model
 			, @RequestParam(value="nowPage", required = false)String nowPage
 			, @RequestParam(value="cntPerPage", required = false)String cntPerPage) {
+			
+		int total = qnaService.countQna();
 		
+		if (!"".equals(nowPage) && !"".equals(cntPerPage)) {
+			nowPage = "1";
+			cntPerPage = "10";
+		} else if (!"".equals(nowPage)) {
+			nowPage = "1";
+		} else if (!"".equals(cntPerPage)) {
+			cntPerPage = "10";
+		}
+		
+		pagingVO = new PagingVO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		
+		model.addAttribute("paging", pagingVO);
+		model.addAttribute("qnaList", qnaService.selectQnaList(pagingVO));
+	
 		return "qna/qna";
 	}
 	

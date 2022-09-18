@@ -4,8 +4,49 @@
 <mapper namespace="qnaMapper">
 
 	<resultMap type="Audi_Lib.qna.vo.QnaVO" id="qna">
-		
+		<id column="QNA_CODE"		 			property="qnaCode"/>
+		<result column="QNA_TITLE" 			property="qnaTitle"/>
+		<result column="QNA_CONTENT" 			property="qnaContent"/>
+		<result column="REG_MEMBER" 			property="regMember"/>
+		<result column="REG_DATE" 				property="regDate"/>
+		<result column="IS_SECURITY" 			property="isSecurity"/>
+		<result column="IS_NOTICE" 				property="isNotice"/>
+		<result column="FILE_NAME" 				property="fileName"/>
+		<result column="READ_CNT" 				property="readCnt"/>
+		<result column="MEMBER_NAME" 			property="memberName"/>
+		<result column="IS_ADMIN" 				property="isAdmin"/>
 	</resultMap>
+	
+	<!-- QnA 개수 카운트 -->
+	<select id="countQnaInfo" resultType="int">
+		SELECT COUNT(*) FROM QNA_INFO
+	</select>
+	
+	<!-- QnA 목록 조회 -->
+	<select id="selectQnaList" resultMap="qna">
+		SELECT * 
+		FROM (
+		    SELECT 
+		        ROWNUM RN, D.*
+		    FROM
+		        (SELECT
+		            QNA_CODE,
+		            QNA_TITLE,
+		            QNA_CONTENT,
+		            Q.REG_MEMBER AS REG_MEMBER,
+		            L.MEMBER_NAME AS MEMBER_NAME,
+		            L.IS_ADMIN AS IS_ADMIN,
+		            TO_CHAR(Q.REG_DATE, 'YYYY-MM-DD') AS REG_DATE,
+		            IS_SECURITY,
+		            IS_NOTICE,
+		            READ_CNT,
+		            FILE_NAME
+		        FROM QNA_INFO Q 
+		        INNER JOIN LIB_MEMBER L
+		        ON Q.REG_MEMBER = L.MEMBER_CODE) D
+		    )
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
 	
 	
 </mapper>
