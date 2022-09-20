@@ -94,30 +94,4 @@ public class QnaVO {
 		this.isAdmin = isAdmin;
 	}
 	
-	public QnaVO(String qnaCode, String qnaTitle, String qnaContent, String regMember, String regDate, int isSecurity,
-			int isNotice, String fileName, int readCnt, int rn, String memberName, String searchName, String isAdmin) {
-		super();
-		this.qnaCode = qnaCode;
-		this.qnaTitle = qnaTitle;
-		this.qnaContent = qnaContent;
-		this.regMember = regMember;
-		this.regDate = regDate;
-		this.isSecurity = isSecurity;
-		this.isNotice = isNotice;
-		this.fileName = fileName;
-		this.readCnt = readCnt;
-		this.rn = rn;
-		this.memberName = memberName;
-		this.searchName = searchName;
-		this.isAdmin = isAdmin;
-	}
-	
-	@Override
-	public String toString() {
-		return "QnaVO [qnaCode=" + qnaCode + ", qnaTitle=" + qnaTitle + ", qnaContent=" + qnaContent + ", regMember="
-				+ regMember + ", regDate=" + regDate + ", isSecurity=" + isSecurity + ", isNotice=" + isNotice
-				+ ", fileName=" + fileName + ", readCnt=" + readCnt + ", rn=" + rn + ", memberName=" + memberName
-				+ ", searchName=" + searchName + ", isAdmin=" + isAdmin + "]";
-	}
-	
 }

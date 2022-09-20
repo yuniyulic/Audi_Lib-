@@ -30,7 +30,11 @@ table {
 			<!-- @@@@@ 기능 구현 -->
 			<!-- ~줄보기 -->
 			<div style="float: right;">
-					
+				<select>
+					<option>
+						<c:if></c:if>
+					</option>
+				</select>
 			</div>
 			<!-- 옵션선택 끝 -->
 			<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -76,24 +80,41 @@ table {
 					<th scope="col">공개여부</th>
 				</tr>
 			</thead>
-			<!-- @@@@@ 기능 구현 -->
 			<tbody>
 				<c:forEach items="${qnaList }" var="qnaList">
 					<tr>
-						<th scope="row">${qna.rn }</th>
+						<th scope="row">${qnaList.rn }</th>
+						<td>${qnaList.qnaTitle }</td>
+						<td>${qnaList.memberName }</td>
+						<td>${qnaList.regDate }</td>
+						<td>${qnaList.readCnt }</td>
 						<td>
-							hihihi~ wonho HI~~~
+							<c:if test="${qnaList.isSecurity eq 1}">비밀 게시글</c:if>
+							<c:if test="${qnaList.isSecurity ne 1}">전체공개</c:if>
 						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
 
-
-		<!-- @@@@@ 기능 구현 -->
 		<!-- 페이징 -->
 		<div style="display: block; text-align: center;">
-			
+			<c:if test="${paging.startPage != 1 }">
+				<a href="/home/qna?nowPage=${paging.startPage - 1 }&cntPerPage=${paging.cntPerPage }">&lt;</a>
+			</c:if>
+			<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="p">
+				<c:choose>
+					<c:when test="${p == paging.nowPage }">
+						<b>${p }</b>
+					</c:when>
+					<c:when test="${p != paging.nowPage }">
+						<a href="/home/qna?nowPage=${paging.endPage + 1 }&cntPerPage=${paging.cntPerPage }">${p }</a>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+			<c:if test="${paging.endPage != pagine.lastPage }">
+				<a href="/home/qna?nowPage=${paging.endPage + 1 }&cntPerPage=${paging.cntPerPage }">&gt;</a>
+			</c:if>
 		</div>
 
 

@@ -138,8 +138,9 @@ public class HomeController {
 			cntPerPage = "10";
 		}
 		
+		String keyword = pagingVO.getKeyword();
 		pagingVO = new PagingVO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-		
+		pagingVO.setKeyword(keyword);
 		model.addAttribute("paging", pagingVO);
 		model.addAttribute("qnaList", qnaService.selectQnaList(pagingVO));
 	
