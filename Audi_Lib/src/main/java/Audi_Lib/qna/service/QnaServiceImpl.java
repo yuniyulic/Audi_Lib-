@@ -27,6 +27,19 @@ public class QnaServiceImpl implements QnaService{
 	public List<QnaVO> selectQnaList(PagingVO pagingVO) {
 		return sqlSession.selectList("selectQnaList", pagingVO);
 	}
+
+	//QnA 작성
+	@Override
+	public int insertQna(QnaVO qnaVO) {
+		return sqlSession.insert("insertQna", qnaVO);
+	}
+
+	//QnA 상세 조회
+	@Override
+	public QnaVO detailQna(QnaVO qnaVO) {
+		return sqlSession.selectOne("detailQna", qnaVO);
+	}
+
 	
 	
 }

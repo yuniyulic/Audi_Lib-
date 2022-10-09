@@ -12,7 +12,11 @@ table {
 }
 </style>
 <script type="text/javascript">
-	
+	selChange = function() {
+		var sel = document.getElementById('cntPerPage').value;
+		location.href = "/home/qna?nowPage=${paging.nowPage}&cntPerPage="
+				+ sel;
+	}
 </script>
 </head>
 <body>
@@ -27,13 +31,13 @@ table {
 		<hr style="margin-bottom: 30px;">
 
 		<nav class="navbar navbar-expand-lg navbar-light">
-			<!-- @@@@@ 기능 구현 -->
 			<!-- ~줄보기 -->
 			<div style="float: right;">
-				<select>
-					<option>
-						<c:if></c:if>
-					</option>
+				<select id="cntPerPage" name="sel" onchange="selChange()">
+					<option value="5" <c:if test="${paging.cntPerPage == 5 }">selected</c:if>>5줄 보기</option>
+					<option value="10" <c:if test="${paging.cntPerPage == 10 }">selected</c:if>>10줄 보기</option>
+					<option value="15" <c:if test="${paging.cntPerPage == 15 }">selected</c:if>>15줄 보기</option>
+					<option value="20" <c:if test="${paging.cntPerPage == 20 }">selected</c:if>>20줄 보기</option>
 				</select>
 			</div>
 			<!-- 옵션선택 끝 -->
@@ -52,7 +56,7 @@ table {
 					</li>
 					<li class="nav-item active"></li>
 				</ul>
-				<form class="form-inline my-2 my-lg-0" method="post" action="/home/board">
+				<form class="form-inline my-2 my-lg-0" method="post" action="/home/qna">
 					<input class="form-control mr-sm-2" name="keyword" type="search" value="${paging.keyword }" placeholder="제목을 입력하세요." aria-label="Search">
 					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 				</form>
@@ -84,7 +88,11 @@ table {
 				<c:forEach items="${qnaList }" var="qnaList">
 					<tr>
 						<th scope="row">${qnaList.rn }</th>
-						<td>${qnaList.qnaTitle }</td>
+						<td>
+							<a href="/qna/detailQna?qnaCode=${qnaList.qnaCode}">
+								${qnaList.qnaTitle }
+							</a>
+						</td>
 						<td>${qnaList.memberName }</td>
 						<td>${qnaList.regDate }</td>
 						<td>${qnaList.readCnt }</td>
@@ -121,7 +129,7 @@ table {
 		<div class="row">
 			<div class="offset-11 col-1">
 				<!-- @@@@@ 기능 구현 -->
-				<button class="btn btn-primary" onclick="location.href='/board/writeBoard';">글쓰기</button>
+				<button class="btn btn-primary" onclick="location.href='/qna/writeQna';">글쓰기</button>
 			</div>
 		</div>
 

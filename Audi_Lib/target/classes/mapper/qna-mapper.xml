@@ -5,7 +5,7 @@
 
 	<resultMap type="Audi_Lib.qna.vo.QnaVO" id="qna">
 		<id column="QNA_CODE"		 			property="qnaCode"/>
-		<result column="QNA_TITLE" 			property="qnaTitle"/>
+		<result column="QNA_TITLE" 				property="qnaTitle"/>
 		<result column="QNA_CONTENT" 			property="qnaContent"/>
 		<result column="REG_MEMBER" 			property="regMember"/>
 		<result column="REG_DATE" 				property="regDate"/>
@@ -46,8 +46,48 @@
 		        ON Q.REG_MEMBER = L.MEMBER_CODE) D
 		    )
 		WHERE RN BETWEEN #{start} AND #{end}
+		<if test="keyword != null and !keyword.equals('')">
+		AND QNA_TITLE LIKE '%' || #{keyword} || '%'
+		</if>
 	</select>
 	
+	<!-- QnA 작성 -->
+	<insert id="insertQna">
+		INSERT INTO QNA_INFO (
+		    QNA_CODE
+		    , QNA_TITLE
+		    , QNA_CONTENT
+		    , REG_MEMBER
+		    , REG_DATE
+		    , IS_SECURITY
+		    , IS_NOTICE
+		) VALUES (
+		    (SELECT 'QNA_'||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(QNA_CODE, 5))) + 1, 1), 3, '0') FROM QNA_INFO)
+		    , #{qnaTitle}
+		    , #{qnaContent}
+		    , #{regMember}
+		    , SYSDATE
+		    , #{isSecurity}
+		    , #{isNotice}
+		)
+	</insert>
+	
+	<!-- QnA 상세 조회 -->
+	<select id="detailQna" resultMap="qna">
+		SELECT QNA_CODE
+		        , QNA_TITLE
+		        , QNA_CONTENT
+		        , REG_MEMBER
+		        , TO_CHAR(B.REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+		        , IS_SECURITY
+		        , IS_NOTICE
+		        , FILE_NAME
+		        , READ_CNT
+		        , L.MEMBER_NAME
+		FROM QNA_INFO B JOIN LIB_MEMBER L
+		ON B.REG_MEMBER = L.MEMBER_CODE
+		WHERE QNA_CODE = #{qnaCode}
+	</select>
 	
 </mapper>
 

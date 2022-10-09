@@ -120,26 +120,38 @@ public class HomeController {
 		return "board/board";
 	}
 	
-	/* @@@@@@ 기능 구현 */
 	/* 참여마당 - QnA */
 	@RequestMapping("/qna")
 	public String qna(PagingVO pagingVO, Model model
 			, @RequestParam(value="nowPage", required = false)String nowPage
 			, @RequestParam(value="cntPerPage", required = false)String cntPerPage) {
-			
+		
 		int total = qnaService.countQna();
 		
-		if (!"".equals(nowPage) && !"".equals(cntPerPage)) {
+		//1페이지에서 5줄 보기 했을 때
+		//nowPage : 1
+		//cntPerPage : 5
+		//이렇게 잘 들어있음
+		//근데 밑에서 1, 10 이렇게 됨
+		//.equals() 이거 nullPointException 방지법? 
+		
+		if (nowPage == null && cntPerPage == null) {
 			nowPage = "1";
 			cntPerPage = "10";
-		} else if (!"".equals(nowPage)) {
+		} else if (nowPage == null) {
 			nowPage = "1";
-		} else if (!"".equals(cntPerPage)) {
+		} else if (cntPerPage == null) { 
 			cntPerPage = "10";
 		}
 		
+		
+		System.out.println("@@@@@@@@@@@");
+		System.out.println(nowPage);
+		System.out.println(cntPerPage);
+		
+		
 		String keyword = pagingVO.getKeyword();
-		pagingVO = new PagingVO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		pagingVO = new PagingVO(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage)); //여기서 sql문에 들어갈 start, end 값 넣음
 		pagingVO.setKeyword(keyword);
 		model.addAttribute("paging", pagingVO);
 		model.addAttribute("qnaList", qnaService.selectQnaList(pagingVO));

@@ -12,4 +12,10 @@ public interface QnaService {
 	
 	//QnA 목록 조회
 	List<QnaVO> selectQnaList(PagingVO pagingVO);
+
+	//QnA 작성
+	int insertQna(QnaVO qnaVO);
+	
+	//QnA 상세 조회
+	QnaVO detailQna(QnaVO qnaVO);
 }
